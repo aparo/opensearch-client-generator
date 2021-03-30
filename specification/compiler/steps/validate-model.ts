@@ -558,11 +558,6 @@ export default async function validateModel (apiModel: model.Model, restSpec: Ma
       switch (fqName) {
         // Base type also used as property, no polymorphic usage
         case 'internal:ErrorCause':
-        case 'x_pack.enrich:EnrichPolicy':
-        case 'x_pack.info.x_pack_usage:XPackUsage':
-        case 'x_pack.info.x_pack_usage:SecurityFeatureToggle':
-        case 'x_pack.watcher.watcher_stats:WatchRecordQueuedStats':
-        case 'x_pack.security.user.get_user:XPackUser':
         case 'cluster.nodes_stats:MemoryStats':
         case 'search.search:SearchResponse':
           return
@@ -572,9 +567,6 @@ export default async function validateModel (apiModel: model.Model, restSpec: Ma
         case 'analysis.token_filters:TokenFilterBase':
           return
 
-        // Single subclass with no additional properties, can probably be removed
-        case 'x_pack.watcher.input:HttpInputRequestDefinition':
-          return
       }
 
       modelError(`Non-leaf type cannot be used here: '${fqName}'`)
