@@ -564,6 +564,8 @@ export function getNameSpace (node: Node): string {
       // the Array object is defined by TypeScript
       if (name === 'Array') return 'internal'
       const definition = identifier.getDefinitions()[0]
+      process.stdout.write(name + '\n');
+      process.stdout.write(definition + '\n');
       return cleanPath(definition.getSourceFile().getFilePath())
     }
   }

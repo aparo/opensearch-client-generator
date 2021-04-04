@@ -1,62 +1,6 @@
 {
   "endpointErrors": {
-    "data_frame_transform_deprecated.delete_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.get_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.get_transform_stats": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.preview_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.put_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.start_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.stop_transform": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "data_frame_transform_deprecated.update_transform": {
+    "close_point_in_time": {
       "request": [
         "Missing request"
       ],
@@ -73,6 +17,14 @@
       ]
     },
     "get_script_languages": {
+      "request": [
+        "Missing request"
+      ],
+      "response": [
+        "Missing response"
+      ]
+    },
+    "graph.explore": {
       "request": [
         "Missing request"
       ],
@@ -128,14 +80,6 @@
         "Missing response"
       ]
     },
-    "indices.get_data_stream": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
     "indices.get_index_template": {
       "request": [
         "Missing request"
@@ -153,14 +97,6 @@
       ]
     },
     "indices.migrate_to_data_stream": {
-      "request": [
-        "Missing request"
-      ],
-      "response": [
-        "Missing response"
-      ]
-    },
-    "indices.promote_data_stream": {
       "request": [
         "Missing request"
       ],
@@ -208,6 +144,30 @@
         "Missing response"
       ]
     },
+    "migration.deprecations": {
+      "request": [
+        "Missing request"
+      ],
+      "response": [
+        "Missing response"
+      ]
+    },
+    "monitoring.bulk": {
+      "request": [
+        "Missing request"
+      ],
+      "response": [
+        "Missing response"
+      ]
+    },
+    "open_point_in_time": {
+      "request": [
+        "Missing request"
+      ],
+      "response": [
+        "Missing response"
+      ]
+    },
     "rank_eval": {
       "request": [
         "Missing request"
@@ -225,6 +185,7 @@
       "response": [
         "Missing response"
       ]
-    }  },
+    }
+  },
   "generalErrors": []
 }

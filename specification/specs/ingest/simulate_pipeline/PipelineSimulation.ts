@@ -22,5 +22,5 @@ class PipelineSimulation {
   processor_results?: PipelineSimulation[]
   tag?: string
   processor_type?: string
-  status?: Status
+  // status?: Status  //TODO aparo: disabled check the meaning
 }
