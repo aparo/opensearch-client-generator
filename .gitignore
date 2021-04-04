@@ -50,5 +50,9 @@ specification/lib
 
 # scala
 .metals/
+.bloop/
+.bsp/
 target/
 project/project
+project/
+project/metals.sbt
