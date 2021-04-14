@@ -10,6 +10,8 @@ lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 
 val zioVersion="1.0.5"
 
+Licensing.settings
+
 libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "23.0",
   "com.typesafe" % "config" % "1.4.0",
@@ -18,6 +20,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
   "io.circe" %% "circe-derivation-annotations" % "0.13.0-M5",
   "io.circe" %% "circe-parser" % "0.13.0",
+  "com.beachape" %% "enumeratum-circe" % "1.6.1",
   "dev.zio" %% "zio" % zioVersion,
     "dev.zio" %% "zio-test"          % zioVersion % "test",
   "dev.zio" %% "zio-test-sbt"      % zioVersion % "test",

@@ -18,7 +18,7 @@
  */
 
 class QueryBase {
-  boost?: float
+  boost?: float = 1.0
   _name?: string
 }
 
