@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
   "io.circe" %% "circe-derivation-annotations" % "0.13.0-M5",
   "io.circe" %% "circe-parser" % "0.13.0",
+  "io.circe" %% "circe-yaml" % "0.12.0",
   "com.beachape" %% "enumeratum-circe" % "1.6.1",
   "dev.zio" %% "zio" % zioVersion,
     "dev.zio" %% "zio-test"          % zioVersion % "test",

@@ -28,7 +28,12 @@ final case class Root(
     @JsonKey("_info") info: Info,
     endpoints: List[EndPoint],
     types: List[ESType]
-)
+) {
+  def getType(name:String)=types.find(_.name.name==name)
+
+  def getType(name:ClassReference)=types.find(_.name==name)
+
+}
 
 @JsonCodec
 final case class License(name: String, url: String)
@@ -52,7 +57,9 @@ final case class EndPoint(
 )
 
 @JsonCodec
-final case class ClassReference(name: String, namespace: String)
+final case class ClassReference(name: String, namespace: String) {
+  def fullName:String=s"$namespace.$name"
+}
 
 @JsonCodec
 final case class Deprecation(description: String, version: String)
