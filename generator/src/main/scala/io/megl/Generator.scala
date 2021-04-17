@@ -20,18 +20,34 @@ import better.files._
 import io.circe
 import io.megl.generators.OpenAPIGenerator
 import io.megl.models.Root
+import org.scalablytyped.converter.internal.InFile
+import org.scalablytyped.converter.internal.ts.parser
 
 object Generator extends App {
+//  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
+  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "document" / "single" / "update" / "UpdateRequest.ts"
 
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  val result=for {
+    parsed <- parser.parseFile(InFile(os.Path(tsFile.toJava)))
+  } yield {
+   parsed.members.foreach(println)
+  }
 
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
 
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
+
+  println(result)
+
+
+
+//  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+//
+//  val schema: Either[circe.Error, Root] = for {
+//    json   <- io.circe.parser.parse(schemaJson.contentAsString)
+//    schema <- json.as[Root]
+//  } yield schema
+//
+////  print(schema)
+//  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
+//  gen.generator()
 
 }
