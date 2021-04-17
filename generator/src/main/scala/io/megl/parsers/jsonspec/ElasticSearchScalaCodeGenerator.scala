@@ -40,7 +40,7 @@ class ElasticSearchScalaCodeGenerator extends BaseCodeGenerator {
     runREST()
   def runMappings(): Unit = {
     val apis = mappingFiles.flatMap { f =>
-      processFile(f) match {
+      APIEntry.processFile(f) match {
         case Left(value) =>
           println(f)
           println(value)
@@ -57,7 +57,7 @@ class ElasticSearchScalaCodeGenerator extends BaseCodeGenerator {
     val apis = files
       //      .filter(_.name == "get.json")
       .flatMap { f =>
-        processFile(f) match {
+        APIEntry.processFile(f) match {
           case Left(value) =>
             println(f)
             println(value)

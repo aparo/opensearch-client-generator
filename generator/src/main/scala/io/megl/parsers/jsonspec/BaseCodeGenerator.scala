@@ -35,16 +35,16 @@ trait BaseCodeGenerator {
 
   def run(): Unit
 
-  protected def processFile(name: File): Either[io.circe.Error, Seq[APIEntry]] =
-    if (name.name.startsWith("_"))
-      Right(Nil)
-    else {
-      for {
-        json <- io.circe.parser.parse(name.contentAsString)
-        obj  <- json.as[Map[String, APIEntry]]
-      } yield {
-        obj.map(v => v._2.copy(name = v._1)).toSeq
-      }
-    }
+  // protected def processFile(name: File): Either[io.circe.Error, Seq[APIEntry]] =
+  //   if (name.name.startsWith("_"))
+  //     Right(Nil)
+  //   else {
+  //     for {
+  //       json <- io.circe.parser.parse(name.contentAsString)
+  //       obj  <- json.as[Map[String, APIEntry]]
+  //     } yield {
+  //       obj.map(v => v._2.copy(name = v._1)).toSeq
+  //     }
+  //   }
 
 }

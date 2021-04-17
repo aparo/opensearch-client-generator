@@ -21,15 +21,20 @@ import scala.collection.mutable.ListBuffer
 
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 import io.megl.Constants
+import better.files.File
 
 @JsonCodec
 case class APIDocumetation(url: String, description: String)
+
+@JsonCodec
+case class APIHeaders(accept: List[String]=Nil, description: List[String]=Nil)
 
 @JsonCodec
 case class APIEntry(
   name: String = "undefined",
   documentation: APIDocumetation,
   url: APIURL,
+  headers: APIHeaders=APIHeaders(),
   body: Option[APIBody] = None,
   result: Option[APIResult] = None,
   params: Map[String, Parameter] = Map.empty[String, Parameter],
@@ -37,7 +42,8 @@ case class APIEntry(
   @JsonKey("native_request") nativeRequest: Option[String] = None,
   @JsonKey("native_response") nativeResponse: Option[String] = None,
   response: Option[APIResponse] = None,
-  stability: Option[String] = None
+  stability: Option[String] = None,
+  visibility: Option[String] = None
 ) {
   private var path: String                    = ""
   var extra: Map[String, String]              = Map.empty[String, String]
@@ -509,5 +515,17 @@ object APIEntry {
     "Msearch"      -> "MultiSearch",
     "Mtermvectors" -> "MultiTermVectors"
   )
+
+def processFile(name: File): Either[io.circe.Error, Seq[APIEntry]] =
+    if (name.name.startsWith("_"))
+      Right(Nil)
+    else {
+      for {
+        json <- io.circe.parser.parse(name.contentAsString)
+        obj  <- json.as[Map[String, APIEntry]]
+      } yield {
+        obj.map(v => v._2.copy(name = v._1)).toSeq
+      }
+    }
 
 }

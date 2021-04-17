@@ -25,15 +25,15 @@ import org.scalablytyped.converter.internal.ts.parser
 
 object Generator extends App {
 //  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
-  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "document" / "single" / "update" / "UpdateRequest.ts"
+  //val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "document" / "single" / "update" / "UpdateRequest.ts"
 
-  val result=for {
-    parsed <- parser.parseFile(InFile(os.Path(tsFile.toJava)))
-  } yield {
-   parsed.members.foreach(println)
-  }
+  // val result=for {
+  //   parsed <- parser.parseFile(InFile(os.Path(tsFile.toJava)))
+  // } yield {
+  //  parsed.members.foreach(println)
+  // }
 
-
+    val result=io.megl.parsers.parseJson()
 
   println(result)
 
