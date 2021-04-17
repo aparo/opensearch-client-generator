@@ -54,5 +54,4 @@ specification/lib
 .bsp/
 target/
 project/project
-project/
 project/metals.sbt
