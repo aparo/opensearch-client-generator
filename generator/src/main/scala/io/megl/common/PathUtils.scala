@@ -22,7 +22,6 @@ import scala.util.Try
 import better.files._
 import com.github.difflib.DiffUtils
 import com.github.difflib.patch.DeltaType
-import java.io.File
 
 /**
  * Common functionalities for working with the paths
@@ -46,15 +45,13 @@ object PathUtils {
       }
   }
 
-  def recursivelyListFiles(f: java.io.File): Array[java.io.File] = {
-    val these = f.listFiles
-    these ++ these.filter(_.isDirectory).flatMap(recursivelyListFiles)
-  }
+//  def recursivelyListFiles(f: File): Array[File] = {
+//    val these = f.listFiles
+//    these ++ these.filter(_.isDirectory).flatMap(recursivelyListFiles)
+//  }
 
   def getScala(paths: Array[String]): List[File] =
-    paths.flatMap { (dir) =>
-      recursivelyListFiles(new java.io.File(dir))
-    }.filter(_.getName.endsWith(".scala")).toList
+    paths.flatMap { (dir) => File(dir).listRecursively}.filter(_.name.endsWith(".scala")).toList
 
   def expandFiles(list: List[better.files.File]): List[better.files.File] =
     expandFiles(list, _ => true, Set("target", "tmp", ".metals", ".bloop"))

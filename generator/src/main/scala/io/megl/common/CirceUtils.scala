@@ -223,7 +223,7 @@ object CirceUtils {
   /**
    * Filters a series of properties, keeping only the valid ones.
    */
-  def filterValid(properties: (String, Json)*): immutable.Seq[(String, Json)] =
+  def filterValid(properties: (String, Json)*): Seq[(String, Json)] =
     properties.filter(isValidJsonProperty)
 
   /**
