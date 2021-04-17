@@ -1,0 +1,30 @@
+@(qf: io.megl.models.klass.query.QueryClassDef)
+package elasticsearch.queries
+
+@(qf.scalaExtraImports)
+import elasticsearch.search._
+import io.circe._
+
+case class @(qf.className)(@qf.scalaClassSignature
+           @(" "*qf.className.get.length)) extends Query {
+
+    val filterName = @(qf.className).NAME
+
+    def toInnerJson = {
+@(qf.innerJsonScala)
+    }
+@(qf.extraCaseClassScala)
+}
+
+object @(qf.className) extends QueryType[@(qf.className)] {
+
+    val NAME="@(qf.name)"
+
+    def fromInnerJson(json: Json):@(qf.className) = {
+@(qf.readJsonVarScala)
+        new @(qf.className)(
+@(qf.readJsonScala)
+        )
+    }
+@(qf.extraObjectScala)
+}

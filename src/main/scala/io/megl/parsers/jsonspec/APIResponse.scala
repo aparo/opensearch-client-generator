@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package io.megl
+package io.megl.parsers.jsonspec
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
+import io.circe.JsonObject
+import io.circe.derivation.annotations.JsonCodec
 
-object Generator extends App {
-
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
-
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
-
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
-
-}
+@JsonCodec
+final case class APIResponse(
+  params: Map[String, Parameter] = Map.empty[String, Parameter],
+  samples: List[JsonObject] = Nil
+)

@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package io.megl
+package io.megl.models.klass
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
+import com.typesafe.scalalogging.LazyLogging
 
-object Generator extends App {
+trait BaseGeneratorTrait extends LazyLogging {
 
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  def classes: List[ClassDef]
 
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
+  def pathScope: String
 
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
+  def renderTemplate: BaseRenderTemplate
+
+  def generateScala(): Unit =
+    renderTemplate.generateScala(classes)
 
 }

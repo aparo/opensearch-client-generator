@@ -1,0 +1,17 @@
+@(qf: io.megl.models.klass.mapping.MappingClassDef)
+
+@@JsonCodec
+case class @(qf.className)(@qf.scalaClassSignature
+           @(" "*qf.className.get.length)) extends NestableMapping {
+
+    val typeName = @(qf.className).NAME
+
+@(qf.extraCaseClassScala)
+}
+
+object @(qf.className) extends MappingType[@(qf.className)] {
+
+    val NAME="@(qf.name)"
+
+@(qf.extraObjectScala)
+}

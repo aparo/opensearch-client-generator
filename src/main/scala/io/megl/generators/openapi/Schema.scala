@@ -63,4 +63,6 @@ object Schema {
     discriminator: Option[Discriminator]
   ): Schema =
     new Schema(oneOf = Some(references), discriminator = discriminator)
+
+  lazy val genericObject: ReferenceOr[Schema] = Right(Schema(SchemaType.Object))
 }

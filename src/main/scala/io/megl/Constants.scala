@@ -16,22 +16,16 @@
 
 package io.megl
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
+import better.files.File
 
-object Generator extends App {
+object Constants {
 
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  val destPackage: String   = "opensearch"
+  val namespaceName: String = "opensearch"
+  val esClassName: String   = "OpenSearch"
 
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
-
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
+  lazy val devESSourcePath: File     = File.home / "Project" / "OpenSearch"
+  lazy val devRestAPIPath: File      = File.home / "Project" / "opensearch-client-generator"
+  lazy val devScalaAPIDestPath: File = File.home / "Project" / "opensearch-scala-client"
 
 }

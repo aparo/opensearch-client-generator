@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package io.megl
+package io.megl.models.klass
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
-
-object Generator extends App {
-
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
-
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
-
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
-
+/**
+ * Created by alberto on 10/04/2017.
+ */
+trait BaseRenderTemplate {
+  def generateScala(classes: List[ClassDef]): Unit
 }

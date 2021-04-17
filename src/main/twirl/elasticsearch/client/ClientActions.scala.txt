@@ -1,0 +1,24 @@
+@(namespace:String, importList: List[String], reqResps:List[(String,String)])package elasticsearch.client
+package @{namespace}.client
+
+import io.circe._
+import elasticsearch.ZioResponse
+import elasticsearch.exception.FrameworkException
+@for(action <- importList) {import @action
+}
+
+trait ClientActions {
+
+  def servers: List[ServerAddress]
+
+  def doCall(
+    request: ActionRequest
+  ): ZioResponse[ESResponse]
+
+  def convertResponse[T: Encoder: Decoder](request: ActionRequest)(
+    eitherResponse: Either[FrameworkException, ESResponse]
+  ): Either[FrameworkException, T]
+
+@for(action <- reqResps) {    def execute(request: @{action._1}): ZioResponse[@{action._2}]
+}
+}

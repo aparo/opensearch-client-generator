@@ -18,13 +18,12 @@ package io.megl.generators
 
 import scala.collection.immutable.ListMap
 
-import io.megl.generators.openapi
 import io.megl.generators.openapi._
 import io.megl.models._
 
-final case class OpenAPIGenerator(root: Root) {
+final case class OpenAPIGenerator(root: Root, preferPost: Boolean = true) {
   def generator(): Unit = {
-    root.endpoints.take(1).flatMap { endpoint =>
+    val paths = root.endpoints.take(1).flatMap { endpoint =>
       getPaths(endpoint)
     }
 
@@ -38,14 +37,15 @@ final case class OpenAPIGenerator(root: Root) {
 
     val openapiRef = OpenAPI(
       info = openapi.Info("OpenSearch API Definition", "7.10.3"),
+      paths = ListMap(paths: _*),
       components = Some(
         Components(
           schemas = ListMap(types: _*),
           securitySchemes = ListMap(
             SecurityScheme.BASIC -> Right(SecurityScheme.basic)
-//        ,
-//        SecurityScheme.BEARER -> Right(SecurityScheme.bearer),
-//        SecurityScheme.APIKEY -> Right(SecurityScheme.apiKey)
+            //        ,
+            //        SecurityScheme.BEARER -> Right(SecurityScheme.bearer),
+            //        SecurityScheme.APIKEY -> Right(SecurityScheme.apiKey)
           )
         )
       )
@@ -59,11 +59,79 @@ final case class OpenAPIGenerator(root: Root) {
     }
 
   def buildPathInfo(endpointUrl: EndpointUrl, endPoint: EndPoint): PathItem = {
-    var pi = PathItem(description = Some(endPoint.description))
-    endpointUrl.methods.foreach { method =>
+    val description = List(
+      endPoint.description,
+      endPoint.docUrl,
+      endPoint.since.map(v => s"Since: $v").getOrElse(""),
+      endPoint.stability.map(v => s"Stability: $v").getOrElse("")
+    ).filter(_.nonEmpty).mkString("\n")
+
+    var pi = PathItem(description = Some(description))
+    val tags = (endPoint.request.map(_.namespace.split('.').head).toList ++ endPoint.response
+      .map(_.namespace.split('.').head)
+      .toList).distinct.sorted
+
+    var operation = Operation(
+      operationId = endPoint.name,
+      summary = Some(endPoint.description),
+      responses = buildResponse(endPoint),
+      tags = tags,
+      requestBody = buildRequest(endPoint)
+    )
+    val methods: List[String] = if (preferPost) {
+      applyPreferPost(endpointUrl.methods)
+    } else endpointUrl.methods
+
+    methods.foreach {
+      case "POST" => pi = pi.copy(post = Some(operation))
+      case "GET"  => pi = pi.copy(get = Some(operation))
+      case "PUT"  => pi = pi.copy(put = Some(operation))
+      case "HEAD" => pi = pi.copy(head = Some(operation))
     }
     pi
   }
+
+  def applyPreferPost(methods: List[String]): List[String] =
+    if (methods.contains("POST") && methods.contains("PUT"))
+      methods.filterNot(_ == "PUT")
+    else methods
+
+  def buildRequest(endPoint: EndPoint): Option[ReferenceOr[RequestBody]] =
+    for {
+      responseType <- endPoint.request
+      eType        <- root.getType(responseType)
+    } yield Right(
+      RequestBody(
+        description = Some(eType.kind),
+        required = Some(endPoint.requestBodyRequired),
+        content = ListMap(
+          endPoint.accept.map { accept =>
+            accept -> MediaType(
+              schema = Some(getReference(eType))
+            )
+          }: _*
+        )
+      )
+    )
+
+  def buildResponse(endPoint: EndPoint): ListMap[ResponsesKey, ReferenceOr[Response]] = {
+    val res = for {
+      responseType <- endPoint.response
+      eType        <- root.getType(responseType)
+    } yield Response(
+      description = eType.kind,
+      content = ListMap(
+        endPoint.accept.map { accept =>
+          accept -> MediaType(
+            schema = Some(getReference(eType))
+          )
+        }: _*
+      )
+    )
+    ListMap(res.map(v => ResponsesCodeKey(200) -> Right(v)).toList: _*)
+  }
+
+  def getReference(eType: ESType): ReferenceOr[Schema] = Left(Reference(eType.name.fullName))
 
   def getSchema(eType: ESType, props: List[(Boolean, String, ReferenceOr[Schema])]): ReferenceOr[Schema] = Right(
     Schema(

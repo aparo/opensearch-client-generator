@@ -1,0 +1,37 @@
+@(actions: List[String])package elasticsearch.client
+
+import org.elasticsearch.action.{Action, ActionListener, ActionRequest, ActionRequestBuilder, ActionResponse}
+import org.elasticsearch.client.Client
+@for(action <- actions) {import @action
+}
+import scala.concurrent.{Future, Promise}
+
+trait ActionMagnet[Request, Response] {
+  def execute(javaClient: Client, request: Request): Future[Response]
+}
+
+object ActionMagnet {
+
+@for(action <- actions) {  implicit val @{action.split('.').last.substring(0,1).toLowerCase}@{action.split('.').last.substring(1)} = magnet(@{action.split('.').last}.INSTANCE)
+}
+
+
+  private def magnet[Request <: ActionRequest[Request], Response <: ActionResponse, RequestBuilder <: ActionRequestBuilder[Request, Response, RequestBuilder]](action: Action[Request, Response, RequestBuilder]) =
+    new ActionMagnet[Request, Response] {
+      def execute(javaClient: Client, request: Request) = {
+        val promise = Promise[Response]()
+        javaClient.execute(action, request, actionListener(promise))
+        promise.future
+      }
+    }
+
+  private def actionListener[A](promise: Promise[A]) = new ActionListener[A] {
+    def onResponse(response: A) {
+      promise.success(response)
+    }
+
+    def onFailure(e: Throwable) {
+      promise.failure(e)
+    }
+  }
+}

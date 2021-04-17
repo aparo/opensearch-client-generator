@@ -1,0 +1,13 @@
+@(namespace:String, importList: List[String], name:String, methods:String)
+package @{namespace}.managers
+
+import elasticsearch._
+import io.circe._
+import elasticsearch.ZioResponse
+@for(action <- importList) {import @action
+}
+
+class @(name.capitalize)Manager(client: ElasticSearch) {
+
+  @methods
+}

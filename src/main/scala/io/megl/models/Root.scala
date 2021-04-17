@@ -66,7 +66,7 @@ final case class EndpointUrl(
   methods: List[String],
   path: String,
   deprecation: Option[Deprecation] = None
-)
+) {}
 
 // ESType
 

@@ -1,0 +1,11 @@
+@(namespace:String, importList: List[String], request:String)
+package @{namespace}.client
+
+import io.circe._
+import io.circe.derivation.annotations._
+import scala.collection.mutable
+
+@for(action <- importList) {import @action
+}
+
+@request

@@ -34,6 +34,8 @@ libraryDependencies ++= Seq(
   "io.circe"                   %% "circe-parser"                 % "0.13.0",
   "io.circe"                   %% "circe-yaml"                   % "0.12.0",
   "com.beachape"               %% "enumeratum-circe"             % "1.6.1",
+  "io.github.java-diff-utils"   % "java-diff-utils"              % "4.9",
+  "org.scalameta"              %% "scalafmt-core"                % "2.7.5",
   "dev.zio"                    %% "zio"                          % zioVersion,
   "dev.zio"                    %% "zio-test"                     % zioVersion % "test",
   "dev.zio"                    %% "zio-test-sbt"                 % zioVersion % "test",
@@ -72,4 +74,4 @@ addCommandAlias("fix", "scalafixAll")
 addCommandAlias("fixCheck", "scalafixAll --check")
 addCommandAlias("fmt", "all scalafmtSbt scalafmtAll")
 addCommandAlias("fmtCheck", "all scalafmtSbtCheck scalafmtCheckAll")
-addCommandAlias("prepare", "fix; fmt")
+addCommandAlias("prepare", "headerCreateAll; fix; fmt")

@@ -14,24 +14,34 @@
  * limitations under the License.
  */
 
-package io.megl
+package io.megl.models.klass
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
+import io.circe.Json
+import io.megl.models.APIUtils
 
-object Generator extends App {
+trait BaseMemberTrait {
+  def name: String
 
-  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  def `type`: String
 
-  val schema: Either[circe.Error, Root] = for {
-    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-    schema <- json.as[Root]
-  } yield schema
+  def required: Boolean
 
-//  print(schema)
-  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-  gen.generator()
+  def multiple: Boolean
+
+  def codeName: Option[String]
+
+  def subType: Option[String]
+
+  def description: String
+
+  def options: Option[List[Json]]
+
+  def inField: Option[Boolean]
+
+  def default: Option[Json]
+
+  def isBaseType: Boolean = APIUtils.isBaseType(`type`)
+
+  def isInField: Boolean = inField.getOrElse(false)
 
 }
