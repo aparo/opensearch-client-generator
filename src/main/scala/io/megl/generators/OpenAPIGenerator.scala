@@ -16,26 +16,53 @@
 
 package io.megl.generators
 
+import scala.collection.immutable.ListMap
+
 import io.megl.generators.openapi
 import io.megl.generators.openapi._
 import io.megl.models._
 
-import scala.collection.immutable.ListMap
-
 final case class OpenAPIGenerator(root: Root) {
   def generator(): Unit = {
-    val types = root.types.map {
-      eType =>
+    root.endpoints.take(1).flatMap { endpoint =>
+      getPaths(endpoint)
+    }
+
+    val types = root.types
+      .take(0)
+      .map { eType =>
         val props = getProperties(eType)
         eType.name.fullName -> getSchema(eType, props)
-    }.sortBy(_._1)
+      }
+      .sortBy(_._1)
 
-    val openapiRef=OpenAPI(info = openapi.Info("OpenSearch API Definition", "7.10.3"),
-      components = Some(Components(schemas = ListMap(types:_*), securitySchemes = ListMap(
-        SecurityScheme.BEARER -> Right(SecurityScheme.bearer),
-        SecurityScheme.APIKEY -> Right(SecurityScheme.apiKey)
-      ))))
+    val openapiRef = OpenAPI(
+      info = openapi.Info("OpenSearch API Definition", "7.10.3"),
+      components = Some(
+        Components(
+          schemas = ListMap(types: _*),
+          securitySchemes = ListMap(
+            SecurityScheme.BASIC -> Right(SecurityScheme.basic)
+//        ,
+//        SecurityScheme.BEARER -> Right(SecurityScheme.bearer),
+//        SecurityScheme.APIKEY -> Right(SecurityScheme.apiKey)
+          )
+        )
+      )
+    )
     println(openapiRef.toYaml)
+  }
+
+  def getPaths(endPoint: EndPoint): List[(String, PathItem)] =
+    endPoint.urls.map { endpointUrl =>
+      endpointUrl.path -> buildPathInfo(endpointUrl, endPoint)
+    }
+
+  def buildPathInfo(endpointUrl: EndpointUrl, endPoint: EndPoint): PathItem = {
+    var pi = PathItem(description = Some(endPoint.description))
+    endpointUrl.methods.foreach { method =>
+    }
+    pi
   }
 
   def getSchema(eType: ESType, props: List[(Boolean, String, ReferenceOr[Schema])]): ReferenceOr[Schema] = Right(
@@ -43,44 +70,43 @@ final case class OpenAPIGenerator(root: Root) {
       title = Some(eType.name.name),
       required = props.filter(_._1).map(_._2),
       properties = props.map(p => p._2 -> p._3).toMap,
-      `type` = Some(SchemaType.Object))
+      `type` = Some(SchemaType.Object)
+    )
   )
 
-  def getProperties(esType: ESType):List[(Boolean, String, ReferenceOr[Schema])] = {
+  def getProperties(esType: ESType): List[(Boolean, String, ReferenceOr[Schema])] =
     esType.inherits
       .flatMap(i => root.getType(i.`type`))
-      .flatMap(i=> getProperties(i)) ++
-    esType.properties.map {
-      p =>
+      .flatMap(i => getProperties(i)) ++
+      esType.properties.map { p =>
         println(p)
         (p.required, p.name, convertProperty(p))
-    }
-  }
-
-
-  def convertProperty(prop: Property): ReferenceOr[Schema] = {
-    convertTypeProperty(prop.`type`)
-  }
-
-  def convertTypeProperty(typeProc:TypeProperty): ReferenceOr[Schema]={
-    typeProc match {
-      case InstanceType(typ, generics) => typ.name match {
-        case "string" => Right(Schema(`type` = SchemaType.String))
-        case "boolean" => Right(Schema(`type` = SchemaType.Boolean))
-        case "integer" => Right(Schema(`type` = SchemaType.Integer))
-        case "long" =>Right(Schema(`type` =Some( SchemaType.Integer), format = Some(SchemaFormat.Int64)))
-        case "float" => Right(Schema(`type` =Some( SchemaType.Number), format = Some(SchemaFormat.Float)))
-        case "double" => Right(Schema(`type` =Some( SchemaType.Number), format = Some(SchemaFormat.Double)))
-          case _ => Left(Reference(typ.namespace))
       }
-      case DictionaryType(key, value) =>
+
+  def convertProperty(prop: Property): ReferenceOr[Schema] =
+    convertTypeProperty(prop.`type`)
+
+  def convertTypeProperty(typeProc: TypeProperty): ReferenceOr[Schema] =
+    typeProc match {
+      case InstanceType(typ, _) =>
+        typ.name match {
+          case "string"  => Right(Schema(`type` = SchemaType.String))
+          case "boolean" => Right(Schema(`type` = SchemaType.Boolean))
+          case "integer" => Right(Schema(`type` = SchemaType.Integer))
+          case "long"    => Right(Schema(`type` = Some(SchemaType.Integer), format = Some(SchemaFormat.Int64)))
+          case "float"   => Right(Schema(`type` = Some(SchemaType.Number), format = Some(SchemaFormat.Float)))
+          case "double"  => Right(Schema(`type` = Some(SchemaType.Number), format = Some(SchemaFormat.Double)))
+          case _         => Left(Reference(typ.namespace))
+        }
+      case DictionaryType(_, value) =>
         Right(Schema(`type` = Some(SchemaType.Object), additionalProperties = Some(convertTypeProperty(value))))
       case UnionType(items) => Right(Schema(oneOf = Some(items.map(i => convertTypeProperty(i)))))
-      case NamedValueType(items) =>  Right(Schema(`type` = Some(SchemaType.Array), oneOf = Some(items.map(i => convertTypeProperty(i)))))
+      case NamedValueType(items) =>
+        Right(Schema(`type` = Some(SchemaType.Array), oneOf = Some(items.map(i => convertTypeProperty(i)))))
       case ArrayType(value) => Right(Schema(`type` = Some(SchemaType.Array), items = Some(convertTypeProperty(value))))
-      case LiteralType(value) => Right(Schema(`type` = Some(SchemaType.String), format = SchemaFormat.withNameInsensitiveOption(value)))
+      case LiteralType(value) =>
+        Right(Schema(`type` = Some(SchemaType.String), format = SchemaFormat.withNameInsensitiveOption(value)))
       case UserDefinedValueType() => Right(Schema(`type` = SchemaType.Object))
     }
-  }
 
 }

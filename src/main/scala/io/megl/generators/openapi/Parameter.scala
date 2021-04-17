@@ -16,10 +16,10 @@
 
 package io.megl.generators.openapi
 
+import scala.collection.immutable.ListMap
+
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import io.circe.derivation.annotations.JsonCodec
-
-import scala.collection.immutable.ListMap
 
 @JsonCodec
 final case class Parameter(

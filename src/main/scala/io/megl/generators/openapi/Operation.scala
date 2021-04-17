@@ -16,9 +16,9 @@
 
 package io.megl.generators.openapi
 
-import io.circe.derivation.annotations.JsonCodec
-
 import scala.collection.immutable.ListMap
+
+import io.circe.derivation.annotations.JsonCodec
 
 // todo: external docs, callbacks, security
 @JsonCodec

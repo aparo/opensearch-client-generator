@@ -49,4 +49,12 @@ object SecurityScheme {
       name = Some("X-API-KEY")
     )
 
+  val BASIC = "basicAuth"
+
+  def basic: SecurityScheme =
+    SecurityScheme(
+      `type` = "http",
+      scheme = Some("basic")
+    )
+
 }

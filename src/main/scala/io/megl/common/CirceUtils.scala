@@ -16,11 +16,12 @@
 
 package io.megl.common
 
+import java.time.{ LocalDateTime, OffsetDateTime }
 
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import scala.collection.Seq
+
 import io.circe._
+import scala.collection.immutable
 
 object CirceUtils {
 
@@ -29,27 +30,27 @@ object CirceUtils {
   lazy val printer2: Printer = Printer.spaces2.copy(dropNullValues = true)
 
   def resolveSingleField[T: Decoder](
-                                      json: Json,
-                                      field: String
-                                    ): Decoder.Result[T] =
+    json: Json,
+    field: String
+  ): Decoder.Result[T] =
     resolveFieldMultiple(json, field).head
 
   def resolveSingleField[T: Decoder](
-                                      jsonObject: JsonObject,
-                                      field: String
-                                    ): Decoder.Result[T] =
+    jsonObject: JsonObject,
+    field: String
+  ): Decoder.Result[T] =
     resolveFieldMultiple(Json.fromJsonObject(jsonObject), field).head
 
   def resolveFieldMultiple[T: Decoder](
-                                        json: JsonObject,
-                                        field: String
-                                      ): List[Decoder.Result[T]] =
+    json: JsonObject,
+    field: String
+  ): List[Decoder.Result[T]] =
     resolveFieldMultiple(Json.fromJsonObject(json), field)
 
   def resolveFieldMultiple[T: Decoder](
-                                        json: Json,
-                                        field: String
-                                      ): List[Decoder.Result[T]] = {
+    json: Json,
+    field: String
+  ): List[Decoder.Result[T]] = {
     val tokens            = field.split('.')
     var terms: List[Json] = keyValues(tokens.head, json)
     tokens.tail.foreach(k => terms = terms.flatMap(j => keyValues(k, j)))
@@ -59,7 +60,7 @@ object CirceUtils {
 
   private def keyValues(key: String, json: Json): List[Json] = json match {
     case json if json.isObject =>
-      json.asObject.get.toList.filter { _._1 == key }.map(_._2)
+      json.asObject.get.toList.filter(_._1 == key).map(_._2)
     case json if json.isArray =>
       json.asArray.get.toList.flatMap(o => keyValues(key, o))
     case _ => Nil
@@ -74,7 +75,7 @@ object CirceUtils {
   }
 
   def mapToJson(map: Map[Any, Any]): Json =
-    Json.obj(map.map( p => p._1.toString -> anyToJson(p._2) ).toSeq: _*)
+    Json.obj(map.map(p => p._1.toString -> anyToJson(p._2)).toSeq: _*)
 
   def anyToJson(value: Any): Json = value match {
     case v: Json       => v
@@ -107,8 +108,8 @@ object CirceUtils {
     case js: Json if js.isNumber  => js.asNumber.get.toDouble
     case js: Json if js.isBoolean => js.asBoolean.getOrElse(true)
     case js: Json if js.isObject =>
-      js.asObject.get.toMap.map {
-        case (name, jval) => name -> jsToAny(jval)
+      js.asObject.get.toMap.map { case (name, jval) =>
+        name -> jsToAny(jval)
       }
     case _ =>
       throw InvalidValueException(s"$value")
@@ -174,16 +175,16 @@ object CirceUtils {
   /**
    * Create a Json from `value`, which is valid if the `isValid` function applied to `value` is true.
    */
-  def toJsonIfValid[T](value: T, isValid: T => Boolean)(
-    implicit enc: Encoder[T]
+  def toJsonIfValid[T](value: T, isValid: T => Boolean)(implicit
+    enc: Encoder[T]
   ): Json =
     if (isValid(value)) enc.apply(value) else Json.Null
 
   def toJsonIfFull[T](value: Seq[T])(implicit enc: Encoder[T]): Json =
     if (value.nonEmpty) Json.fromValues(value.map(enc.apply)) else Json.Null
 
-  def toJsonIfFull[T, S](value: Seq[T], xform: T => S)(
-    implicit enc: Encoder[S]
+  def toJsonIfFull[T, S](value: Seq[T], xform: T => S)(implicit
+    enc: Encoder[S]
   ): Json =
     if (value.nonEmpty) Json.fromValues(value.map(xform.andThen(enc.apply)))
     else Json.Null
@@ -191,8 +192,8 @@ object CirceUtils {
   /**
    * Create a Json from `xform` applied to `value`, which is valid if the `isValid` function applied to `value` is true.
    */
-  def toJsonIfValid[T, S](value: T, isValid: T => Boolean, xform: T => S)(
-    implicit enc: Encoder[S]
+  def toJsonIfValid[T, S](value: T, isValid: T => Boolean, xform: T => S)(implicit
+    enc: Encoder[S]
   ): Json =
     if (isValid(value)) enc.apply(xform(value)) else Json.Null
 
@@ -205,8 +206,8 @@ object CirceUtils {
   /**
    * Create a Json from `xform` applied to `value`, which is valid if `value` is not equal to `default`.
    */
-  def toJsonIfNot[T, S](value: T, default: T, xform: T => S)(
-    implicit enc: Encoder[S]
+  def toJsonIfNot[T, S](value: T, default: T, xform: T => S)(implicit
+    enc: Encoder[S]
   ): Json =
     if (value != default) enc.apply(xform(value)) else Json.Null
 
@@ -223,7 +224,7 @@ object CirceUtils {
   /**
    * Filters a series of properties, keeping only the valid ones.
    */
-  def filterValid(properties: (String, Json)*) =
+  def filterValid(properties: (String, Json)*): immutable.Seq[(String, Json)] =
     properties.filter(isValidJsonProperty)
 
   /**

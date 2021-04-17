@@ -16,4 +16,4 @@
 
 package io.megl.common
 
-case class InvalidValueException(message:String) extends Throwable(message)
+case class InvalidValueException(message: String) extends Throwable(message)

@@ -16,12 +16,12 @@
 
 package io.megl.generators.openapi
 
+import scala.collection.immutable.ListMap
+
 import enumeratum._
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import io.circe.{ Decoder, Encoder, Json }
-
-import scala.collection.immutable.ListMap
 
 @JsonCodec
 final case class Tag(
@@ -178,10 +178,10 @@ sealed trait SchemaType extends EnumEntry with EnumEntry.Lowercase
 
 object SchemaType extends CirceEnum[SchemaType] with Enum[SchemaType] {
   case object Boolean extends SchemaType
-  case object Object extends SchemaType
-  case object Array extends SchemaType
-  case object Number extends SchemaType
-  case object String extends SchemaType
+  case object Object  extends SchemaType
+  case object Array   extends SchemaType
+  case object Number  extends SchemaType
+  case object String  extends SchemaType
   case object Integer extends SchemaType
 
   override def values = findValues

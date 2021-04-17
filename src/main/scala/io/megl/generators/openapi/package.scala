@@ -16,13 +16,13 @@
 
 package io.megl.generators
 
+import scala.collection.immutable
+import scala.collection.immutable.ListMap
+
+import cats.implicits._
 import io.circe.Decoder.Result
 import io.circe._
 import io.circe.syntax._
-import cats.implicits._
-
-import scala.collection.immutable
-import scala.collection.immutable.ListMap
 
 package object openapi {
   implicit class IterableToListMap[A](xs: Iterable[A]) {
@@ -36,8 +36,8 @@ package object openapi {
   }
 
   type ReferenceOr[T] = Either[Reference, T]
-  implicit def referenceEncoder[T](
-    implicit encoder: Encoder.AsObject[T]
+  implicit def referenceEncoder[T](implicit
+    encoder: Encoder.AsObject[T]
   ): Encoder[Either[Reference, T]] =
     new Encoder[Either[Reference, T]] {
       override def apply(a: Either[Reference, T]): Json = a match {
@@ -46,8 +46,8 @@ package object openapi {
       }
     }
 
-  implicit def referenceCodec[T](
-    implicit encoder: Encoder[T],
+  implicit def referenceCodec[T](implicit
+    encoder: Encoder[T],
     decoder: Decoder[T]
   ): Codec[Either[Reference, T]] =
     new Codec[Either[Reference, T]] {

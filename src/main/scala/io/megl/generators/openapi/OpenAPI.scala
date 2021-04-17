@@ -16,10 +16,9 @@
 
 package io.megl.generators.openapi
 
-import cats.implicits._
-import io.circe.derivation.annotations.JsonCodec
-
 import scala.collection.immutable.ListMap
+
+import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import io.circe.yaml.Printer
 import io.megl.common.CirceUtils

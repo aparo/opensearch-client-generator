@@ -17,21 +17,21 @@
 package io.megl
 
 import better.files._
-import io.circe.syntax._
 import io.megl.generators.OpenAPIGenerator
 import io.megl.models.Root
+import io.circe
 
 object Generator extends App {
 
-  val schemaJson=File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
 
-  val schema=for {
-    json <- io.circe.parser.parse(schemaJson.contentAsString)
+  val schema: Either[circe.Error, Root] = for {
+    json   <- io.circe.parser.parse(schemaJson.contentAsString)
     schema <- json.as[Root]
   } yield schema
 
 //  print(schema)
-  val gen=OpenAPIGenerator(schema.right.get)
+  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
   gen.generator()
 
 }
