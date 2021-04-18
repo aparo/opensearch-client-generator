@@ -18,7 +18,7 @@ package io.megl.common
 
 import java.time.{ LocalDateTime, OffsetDateTime }
 
-import scala.collection.{ Seq, immutable }
+import scala.collection.Seq
 
 import io.circe._
 

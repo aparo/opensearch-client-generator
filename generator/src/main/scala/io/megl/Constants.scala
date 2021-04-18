@@ -24,7 +24,7 @@ object Constants {
   val namespaceName: String = "opensearch"
   val esClassName: String   = "OpenSearch"
 
-  lazy val specifications: File     = File.currentWorkingDirectory / "specification" / "specs"
+  lazy val specifications: File = File.currentWorkingDirectory / "specification" / "specs"
 
   lazy val devESSourcePath: File     = File.home / "Project" / "OpenSearch"
   lazy val devRestAPIPath: File      = File.home / "Project" / "opensearch-client-generator"

@@ -51,7 +51,7 @@ object PathUtils {
 //  }
 
   def getScala(paths: Array[String]): List[File] =
-    paths.flatMap { (dir) => File(dir).listRecursively}.filter(_.name.endsWith(".scala")).toList
+    paths.flatMap((dir) => File(dir).listRecursively).filter(_.name.endsWith(".scala")).toList
 
   def expandFiles(list: List[better.files.File]): List[better.files.File] =
     expandFiles(list, _ => true, Set("target", "tmp", ".metals", ".bloop"))

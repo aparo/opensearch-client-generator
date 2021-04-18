@@ -19,22 +19,22 @@ package io.megl.parsers.jsonspec
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
+import better.files.File
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 import io.megl.Constants
-import better.files.File
 
 @JsonCodec
 case class APIDocumetation(url: String, description: String)
 
 @JsonCodec
-case class APIHeaders(accept: List[String]=Nil, description: List[String]=Nil)
+case class APIHeaders(accept: List[String] = Nil, description: List[String] = Nil)
 
 @JsonCodec
 case class APIEntry(
   name: String = "undefined",
   documentation: APIDocumetation,
   url: APIURL,
-  headers: APIHeaders=APIHeaders(),
+  headers: APIHeaders = APIHeaders(),
   body: Option[APIBody] = None,
   result: Option[APIResult] = None,
   params: Map[String, Parameter] = Map.empty[String, Parameter],
@@ -516,7 +516,7 @@ object APIEntry {
     "Mtermvectors" -> "MultiTermVectors"
   )
 
-def processFile(name: File): Either[io.circe.Error, Seq[APIEntry]] =
+  def processFile(name: File): Either[io.circe.Error, Seq[APIEntry]] =
     if (name.name.startsWith("_"))
       Right(Nil)
     else {

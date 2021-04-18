@@ -58,4 +58,4 @@ case class APIURL(paths: List[APIPath] = Nil) {
     ""
   }
 
-  }
+}

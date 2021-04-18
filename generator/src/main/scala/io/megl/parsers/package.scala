@@ -16,16 +16,16 @@
 
 package io.megl
 
+import com.typesafe.scalalogging.LazyLogging
 import io.megl.parsers.jsonspec.APIEntry
 
-package object parsers {
+package object parsers extends LazyLogging {
 
-  def parseJson()={
-    (Constants.specifications / "_json_spec")
-      .listRecursively
+  def parseJson(): List[APIEntry] =
+    (Constants.specifications / "_json_spec").listRecursively
       .filter(_.name.endsWith(".json"))
       .flatMap { f =>
-        println(s"Loading $f")
+        logger.debug(s"Loading $f")
         APIEntry.processFile(f) match {
           case Left(value) =>
             println(f)
@@ -34,7 +34,9 @@ package object parsers {
           case Right(value) =>
             Some(value)
         }
-      }.toList.flatten.sortBy(_.name)
-  }      
+      }
+      .toList
+      .flatten
+      .sortBy(_.name)
 
 }

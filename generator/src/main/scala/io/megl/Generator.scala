@@ -16,12 +16,7 @@
 
 package io.megl
 
-import better.files._
-import io.circe
-import io.megl.generators.OpenAPIGenerator
-import io.megl.models.Root
-import org.scalablytyped.converter.internal.InFile
-import org.scalablytyped.converter.internal.ts.parser
+import io.megl.parsers.jsonspec.APIEntry
 
 object Generator extends App {
 //  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
@@ -33,11 +28,9 @@ object Generator extends App {
   //  parsed.members.foreach(println)
   // }
 
-    val result=io.megl.parsers.parseJson()
+  val result: List[APIEntry] = io.megl.parsers.parseJson()
 
   println(result)
-
-
 
 //  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
 //
