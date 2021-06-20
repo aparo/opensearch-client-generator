@@ -16,8 +16,6 @@
 
 package io.megl.generators
 
-case class OpenAPIGenerator(generatorContext: GeneratorContext) extends GeneratorTrait {
-  override def generate(): Unit = {
-
-  }
+trait GeneratorTrait {
+  def generate(): Unit
 }

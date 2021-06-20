@@ -16,8 +16,15 @@
 
 package io.megl.generators
 
-case class OpenAPIGenerator(generatorContext: GeneratorContext) extends GeneratorTrait {
-  override def generate(): Unit = {
+import io.megl.parsers.jsonspec.APIEntry
 
+case class GeneratorContext(
+                           apiEntries:List[APIEntry]
+                           )
+
+object GeneratorContext{
+  def init():GeneratorContext={
+    val apis: List[APIEntry] = io.megl.parsers.parseJson()
+    GeneratorContext(apiEntries = apis)
   }
 }

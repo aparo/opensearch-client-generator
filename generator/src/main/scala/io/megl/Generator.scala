@@ -16,6 +16,7 @@
 
 package io.megl
 
+import io.megl.generators.{GeneratorContext, OpenAPIGeneratorFromSchema}
 import io.megl.parsers.jsonspec.APIEntry
 
 object Generator extends App {
@@ -28,9 +29,11 @@ object Generator extends App {
   //  parsed.members.foreach(println)
   // }
 
-  val result: List[APIEntry] = io.megl.parsers.parseJson()
+  val entities = io.megl.parsers.parseEntities()
+  val gc=GeneratorContext.init()
+//  val apis: List[APIEntry] = io.megl.parsers.parseJson()
 
-  println(result)
+  println(entities)
 
 //  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
 //
@@ -40,7 +43,7 @@ object Generator extends App {
 //  } yield schema
 //
 ////  print(schema)
-//  val gen: OpenAPIGenerator = OpenAPIGenerator(schema.right.get)
-//  gen.generator()
+  val gen: OpenAPIGeneratorFromSchema = OpenAPIGeneratorFromSchema(schema.right.get)
+  gen.generator()
 
 }

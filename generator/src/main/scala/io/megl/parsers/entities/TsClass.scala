@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.megl.generators
+package io.megl.parsers.entities
 
-case class OpenAPIGenerator(generatorContext: GeneratorContext) extends GeneratorTrait {
-  override def generate(): Unit = {
+import org.scalablytyped.converter.internal.ts.TsDeclClass
 
-  }
-}
+case class TsClass(name:String,
+                   documentation:Option[String]=None,
+                   original:TsDeclClass
+                  )

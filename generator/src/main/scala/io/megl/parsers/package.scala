@@ -16,8 +16,13 @@
 
 package io.megl
 
+import better.files.File
 import com.typesafe.scalalogging.LazyLogging
 import io.megl.parsers.jsonspec.APIEntry
+import org.scalablytyped.converter.internal.InFile
+import org.scalablytyped.converter.internal.ts._
+
+import scala.collection.immutable
 
 package object parsers extends LazyLogging {
 
@@ -38,5 +43,46 @@ package object parsers extends LazyLogging {
       .toList
       .flatten
       .sortBy(_.name)
+
+  def parseEntities() = {
+    Constants.specifications.listRecursively
+      .filter(_.name.endsWith(".ts"))
+      .take(10)
+      .flatMap { f =>
+        logger.debug(s"Loading $f")
+        org.scalablytyped.converter.internal.ts.parser.parseFile(InFile(os.Path(f.toJava))) match {
+          case Left(value) =>
+            println(f)
+            println(value)
+            None
+          case Right(value) =>
+            Some(f -> value)
+        }
+      }
+      .toList.flatMap(r => convertToClass(r._1, r._2))
+  }
+
+  def convertToClass(file: File, parsed: TsParsedFile): immutable.Seq[(File, TsNamedDecl)] = {
+    import parsers.entities._
+    parsed.members.toList.flatMap {
+      c =>
+        c match {
+          case decl: TsDecl =>
+            decl match {
+              case decl2: TsNamedDecl =>
+                Some(file -> decl2)
+              case TsImport(typeOnly, imported, from) => None
+              case TsExport(comments, typeOnly, tpe, exported) => None
+              case TsExportAsNamespace(ident) => None
+            }
+          case container: TsContainer =>
+            container match {
+              case TsParsedFile(comments, directives, members, codePath) => None
+              case module: TsDeclNamespaceOrModule => None
+              case TsGlobal(comments, declared, members, codePath) => None
+            }
+        }
+    }
+  }
 
 }
