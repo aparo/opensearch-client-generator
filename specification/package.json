@@ -1,5 +1,5 @@
 {
-  "name": "elasticsearch-client-specification",
+  "name": "opensearch-client-specification",
   "version": "0.0.1",
   "description": "A library that exposes the elasticsearch client specification as a validatable and iteratable source",
   "main": "compiler/index.ts",

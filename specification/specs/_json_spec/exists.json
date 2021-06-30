@@ -1,5 +1,7 @@
 {
   "exists":{
+    "native_request": "org.opensearch.action.exists.ExistsRequest",
+    "native_response": "org.opensearch.action.exists.ExistsResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html",
       "description":"Returns information about whether a document exists in an index."
@@ -88,7 +90,7 @@
         "description":"A list of fields to extract and return from the _source field"
       },
       "version":{
-        "type":"number",
+        "type":"long",
         "description":"Explicit version number for concurrency control"
       },
       "version_type":{

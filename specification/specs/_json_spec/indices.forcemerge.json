@@ -1,5 +1,7 @@
 {
   "indices.forcemerge":{
+    "native_request": "org.opensearch.action.admin.indices.forcemerge.ForceMergeRequest",
+    "native_response": "org.opensearch.action.admin.indices.forcemerge.ForceMergeResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-forcemerge.html",
       "description":"Performs the force merge operation on one or more indices."

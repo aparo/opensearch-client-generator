@@ -1,5 +1,7 @@
 {
   "indices.exists":{
+    "native_request": "org.opensearch.action.admin.indices.exists.indices.IndicesExistsRequest",
+    "native_response": "org.opensearch.action.admin.indices.exists.indices.IndicesExistsResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-exists.html",
       "description":"Returns information about whether a particular index exists."

@@ -1,5 +1,7 @@
 {
   "explain":{
+    "native_request": "org.opensearch.action.explain.ExplainRequest",
+    "native_response": "org.opensearch.action.explain.ExplainResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/search-explain.html",
       "description":"Returns information about why a specific matches (or doesn't match) a query."

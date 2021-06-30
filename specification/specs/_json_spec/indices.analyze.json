@@ -1,5 +1,8 @@
 {
   "indices.analyze":{
+    "native_request": "org.opensearch.action.admin.indices.analyze.AnalyzeRequest",
+    "native_response": "org.opensearch.action.admin.indices.analyze.AnalyzeResponse",
+    "_native_response": "org.opensearch.action.admin.indices.analyze.DetailAnalyzeResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-analyze.html",
       "description":"Performs the analysis process on a text and return the tokens breakdown of the text."

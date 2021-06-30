@@ -1,5 +1,7 @@
 {
   "scroll":{
+    "native_request": "org.opensearch.action.search.SearchScrollRequest",
+    "native_response": "org.opensearch.action.search.SearchResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/search-request-body.html#request-body-search-scroll",
       "description":"Allows to retrieve a large numbers of results from a single search request."

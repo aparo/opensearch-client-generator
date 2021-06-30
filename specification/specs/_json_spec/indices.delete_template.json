@@ -1,5 +1,7 @@
 {
   "indices.delete_template":{
+    "native_request": "org.opensearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest",
+    "native_response": "org.opensearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html",
       "description":"Deletes an index template."

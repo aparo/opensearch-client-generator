@@ -105,9 +105,22 @@
         "type":"number",
         "description":"only perform the update operation if the last operation that has changed the document has the specified primary term"
       },
-      "require_alias": {
-        "type": "boolean",
-        "description": "When true, requires destination is an alias. Default is false"
+      "pipeline":{
+        "type":"string",
+        "description":"The pipeline id to preprocess incoming documents with"
+      },
+      "version":{
+        "type":"long",
+        "description":"Explicit version number for concurrency control"
+      },
+      "version_type":{
+        "type":"enum",
+        "options":[
+          "internal",
+          "external",
+          "external_gte"
+        ],
+        "description":"Specific version type"
       }
     },
     "body":{

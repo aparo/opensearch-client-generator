@@ -1,5 +1,7 @@
 {
   "indices.delete_alias":{
+     "native_request": "org.opensearch.action.admin.indices.alias.IndicesAliasesRequest",
+    "native_response": "org.opensearch.action.admin.indices.alias.IndicesAliasesResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html",
       "description":"Deletes an alias."

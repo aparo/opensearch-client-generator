@@ -30,10 +30,10 @@ object Generator extends App {
   // }
 
   val entities = io.megl.parsers.parseEntities()
-  val gc=GeneratorContext.init()
+//  val gc=GeneratorContext.init()
 //  val apis: List[APIEntry] = io.megl.parsers.parseJson()
 
-  println(entities)
+  entities.foreach(println)
 
 //  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
 //
@@ -43,7 +43,7 @@ object Generator extends App {
 //  } yield schema
 //
 ////  print(schema)
-  val gen: OpenAPIGeneratorFromSchema = OpenAPIGeneratorFromSchema(schema.right.get)
-  gen.generator()
+//  val gen: OpenAPIGeneratorFromSchema = OpenAPIGeneratorFromSchema(schema.right.get)
+//  gen.generator()
 
 }

@@ -1,5 +1,7 @@
 {
   "count":{
+    "native_request": "org.opensearch.action.count.CountRequest",
+    "native_response": "org.opensearch.action.count.CountResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/search-count.html",
       "description":"Returns number of documents matching a query."
@@ -124,6 +126,7 @@
       },
       "terminate_after":{
         "type":"number",
+        "subtype":"long",
         "description":"The maximum count for each shard, upon reaching which the query execution will terminate early"
       }
     },

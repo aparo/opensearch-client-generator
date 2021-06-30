@@ -1,5 +1,7 @@
 {
   "search":{
+    "native_request": "org.opensearch.action.search.SearchRequest",
+    "native_response": "org.opensearch.action.search.SearchResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/search-search.html",
       "description":"Returns results matching a query."

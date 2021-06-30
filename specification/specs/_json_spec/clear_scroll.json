@@ -1,5 +1,7 @@
 {
   "clear_scroll":{
+    "native_request": "org.opensearch.action.search.ClearScrollRequest",
+    "native_response": "org.opensearch.action.search.ClearScrollResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/current/clear-scroll-api.html",
       "description":"Explicitly clears the search context for a scroll."
@@ -37,9 +39,15 @@
         }
       ]
     },
-    "params":{},
-    "body":{
-      "description":"A comma-separated list of scroll IDs to clear if none was specified via the scroll_id parameter"
+    "params": {},
+    "body": {
+      "description": "A comma-separated list of scroll IDs to clear if none was specified via the scroll_id parameter",
+      "params": {
+        "scroll_id": {
+          "type": "list",
+          "description": "A comma-separated list of scroll IDs to clear"
+        }
+      }
     }
   }
 }

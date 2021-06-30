@@ -1,5 +1,7 @@
 {
   "cluster.allocation_explain":{
+    "native_request": "org.opensearch.action.admin.cluster.allocation.ClusterAllocationExplainRequest",
+    "native_response": "org.opensearch.action.admin.cluster.allocation.ClusterAllocationExplainResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-allocation-explain.html",
       "description":"Provides explanations for shard allocations in the cluster."

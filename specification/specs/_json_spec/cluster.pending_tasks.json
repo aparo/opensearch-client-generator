@@ -1,5 +1,7 @@
 {
   "cluster.pending_tasks":{
+    "native_request": "org.opensearch.action.admin.cluster.tasks.PendingClusterTasksRequest",
+    "native_response": "org.opensearch.action.admin.cluster.tasks.PendingClusterTasksResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-pending.html",
       "description":"Returns a list of any cluster-level changes (e.g. create index, update mapping,\nallocate or fail shard) which have not yet been executed."

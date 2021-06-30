@@ -1,5 +1,7 @@
 {
   "indices.create":{
+    "native_request": "org.opensearch.action.admin.indices.create.CreateIndexRequest",
+    "native_response": "org.opensearch.action.admin.indices.create.CreateIndexResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-create-index.html",
       "description":"Creates an index with optional settings and mappings."
@@ -44,8 +46,11 @@
         "description":"Specify timeout for connection to master"
       }
     },
-    "body":{
-      "description":"The configuration for the index (`settings` and `mappings`)"
+    "body": {
+      "description": "The configuration for the index (`settings` and `mappings`)"
+    },
+    "result": {
+      "scala": "IndexCreate"
     }
   }
 }

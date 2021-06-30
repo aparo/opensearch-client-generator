@@ -1,5 +1,7 @@
 {
   "indices.delete":{
+    "native_request": "org.opensearch.action.admin.indices.delete.DeleteIndexRequest",
+    "native_response": "org.opensearch.action.admin.indices.delete.DeleteIndexResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-delete-index.html",
       "description":"Deletes an index."
@@ -54,6 +56,9 @@
         "default":"open",
         "description":"Whether wildcard expressions should get expanded to open or closed indices (default: open)"
       }
+    },
+    "result": {
+      "scala": "IndexDelete"
     }
   }
 }

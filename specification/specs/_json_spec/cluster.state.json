@@ -1,5 +1,7 @@
 {
   "cluster.state":{
+    "native_request": "org.opensearch.action.admin.cluster.state.ClusterStateRequest",
+    "native_response": "org.opensearch.action.admin.cluster.state.ClusterStateResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-state.html",
       "description":"Returns a comprehensive information about the state of the cluster."

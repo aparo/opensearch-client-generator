@@ -1,5 +1,7 @@
 {
   "bulk":{
+    "native_request": "org.opensearch.action.bulk.BulkRequest",
+    "native_response": "org.opensearch.action.bulk.BulkResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html",
       "description":"Allows to perform multiple index/update/delete operations in a single request."

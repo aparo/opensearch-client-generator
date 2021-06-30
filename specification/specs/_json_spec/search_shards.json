@@ -1,5 +1,7 @@
 {
   "search_shards":{
+    "native_request": "org.opensearch.action.admin.cluster.shards.ClusterSearchShardsRequest",
+    "native_response": "org.opensearch.action.admin.cluster.shards.ClusterSearchShardsResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/search-shards.html",
       "description":"Returns information about the indices and shards that a search request would be executed against."

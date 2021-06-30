@@ -1,5 +1,7 @@
 {
   "index":{
+    "native_request": "org.opensearch.action.index.IndexRequest",
+    "native_response": "org.opensearch.action.index.IndexResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html",
       "description":"Creates or updates a document in an index."
@@ -121,7 +123,7 @@
         "description":"Explicit operation timeout"
       },
       "version":{
-        "type":"number",
+        "type":"long",
         "description":"Explicit version number for concurrency control"
       },
       "version_type":{

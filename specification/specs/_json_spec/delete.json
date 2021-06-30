@@ -1,5 +1,7 @@
 {
   "delete":{
+    "native_request": "org.opensearch.action.delete.DeleteRequest",
+    "native_response": "org.opensearch.action.delete.DeleteResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html",
       "description":"Removes a document from the index."
@@ -85,7 +87,7 @@
         "description":"only perform the delete operation if the last operation that has changed the document has the specified primary term"
       },
       "version":{
-        "type":"number",
+        "type":"long",
         "description":"Explicit version number for concurrency control"
       },
       "version_type":{

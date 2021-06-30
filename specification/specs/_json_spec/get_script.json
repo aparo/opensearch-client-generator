@@ -1,5 +1,7 @@
 {
   "get_script":{
+    "native_request": "org.opensearch.action.admin.cluster.storedscripts.GetStoredScriptRequest",
+    "native_response": "org.opensearch.action.admin.cluster.storedscripts.GetStoredScriptResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting.html",
       "description":"Returns a script."

@@ -1,5 +1,7 @@
 {
   "delete_by_query":{
+    "native_request": "org.opensearch.action.deletebyquery.DeleteByQueryRequest",
+    "native_response": "org.opensearch.action.deletebyquery.DeleteByQueryResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete-by-query.html",
       "description":"Deletes documents matching the provided query."

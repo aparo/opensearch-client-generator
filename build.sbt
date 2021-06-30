@@ -37,7 +37,7 @@ inThisBuild(
 
 version := "1.0.0"
 
-val zioVersion = "1.0.6"
+val zioVersion = "1.0.9"
 
 lazy val root = project
   .in(file("."))
@@ -60,17 +60,17 @@ lazy val generator = (project in file("generator"))
   .settings(BuildHelper.commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalablytyped.converter" %% "ts"                           % "1.0.0-beta32",
+      "org.scalablytyped.converter" %% "ts"                           % "1.0.0-beta33",
       "com.google.guava"             % "guava"                        % "23.0",
-      "com.typesafe"                 % "config"                       % "1.4.0",
+      "com.typesafe"                 % "config"                       % "1.4.1",
       "ch.qos.logback"               % "logback-classic"              % "1.2.3",
       "com.github.pathikrit"        %% "better-files"                 % "3.9.1",
-      "com.typesafe.scala-logging"  %% "scala-logging"                % "3.9.3",
+      "com.typesafe.scala-logging"  %% "scala-logging"                % "3.9.4",
       "io.circe"                    %% "circe-derivation-annotations" % "0.13.0-M5",
-      "io.circe"                    %% "circe-parser"                 % "0.13.0",
-      "io.circe"                    %% "circe-yaml"                   % "0.12.0",
-      "com.beachape"                %% "enumeratum-circe"             % "1.6.1",
-      "io.github.java-diff-utils"    % "java-diff-utils"              % "4.9",
+      "io.circe"                    %% "circe-parser"                 % "0.14.1",
+      "io.circe"                    %% "circe-yaml"                   % "0.14.0",
+      "com.beachape"                %% "enumeratum-circe"             % "1.7.0",
+      "io.github.java-diff-utils"    % "java-diff-utils"              % "4.10",
       "org.scalameta"               %% "scalafmt-core"                % "2.7.5",
       "dev.zio"                     %% "zio"                          % zioVersion,
       "dev.zio"                     %% "zio-test"                     % zioVersion % "test",

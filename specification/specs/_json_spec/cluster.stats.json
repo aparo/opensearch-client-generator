@@ -1,5 +1,7 @@
 {
   "cluster.stats":{
+    "native_request": "org.opensearch.action.admin.cluster.stats.ClusterStatsRequest",
+    "native_response": "org.opensearch.action.admin.cluster.stats.ClusterStatsResponse",
     "documentation":{
       "url":"https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-stats.html",
       "description":"Returns high-level overview of cluster statistics."

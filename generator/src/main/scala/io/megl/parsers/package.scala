@@ -46,7 +46,7 @@ package object parsers extends LazyLogging {
 
   def parseEntities() = {
     Constants.specifications.listRecursively
-      .filter(_.name.endsWith(".ts"))
+      .filter(_.name.endsWith("Bytes.ts"))
       .take(10)
       .flatMap { f =>
         logger.debug(s"Loading $f")
