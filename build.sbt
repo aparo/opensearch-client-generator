@@ -37,7 +37,7 @@ inThisBuild(
 
 version := "1.0.0"
 
-val zioVersion = "1.0.9"
+val zioVersion = "1.0.10"
 
 lazy val root = project
   .in(file("."))
@@ -60,7 +60,7 @@ lazy val generator = (project in file("generator"))
   .settings(BuildHelper.commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalablytyped.converter" %% "ts"                           % "1.0.0-beta33",
+      "org.scalablytyped.converter" %% "ts"                           % "1.0.0-beta35",
       "com.google.guava"             % "guava"                        % "23.0",
       "com.typesafe"                 % "config"                       % "1.4.1",
       "ch.qos.logback"               % "logback-classic"              % "1.2.3",

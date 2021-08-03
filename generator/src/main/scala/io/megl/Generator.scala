@@ -16,7 +16,7 @@
 
 package io.megl
 
-import io.megl.generators.{GeneratorContext, OpenAPIGeneratorFromSchema}
+import io.megl.generators.{GeneratorContext, OpenAPIGeneratorFromSchema, ScalaClassGenerator}
 import io.megl.parsers.jsonspec.APIEntry
 
 object Generator extends App {
@@ -33,7 +33,16 @@ object Generator extends App {
 //  val gc=GeneratorContext.init()
 //  val apis: List[APIEntry] = io.megl.parsers.parseJson()
 
-  entities.foreach(println)
+  val scalaGenerator=new ScalaClassGenerator(GeneratorContext(Nil))
+
+  entities.foreach {
+    case (file, tsObj) =>
+      println(tsObj)
+      val code=scalaGenerator.convertToClass(file, tsObj)
+      println(code)
+  }
+
+
 
 //  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
 //

@@ -44,7 +44,7 @@ package object parsers extends LazyLogging {
       .flatten
       .sortBy(_.name)
 
-  def parseEntities() = {
+  def parseEntities(): Seq[(File, TsNamedDecl)] = {
     Constants.specifications.listRecursively
       .filter(_.name.endsWith("Bytes.ts"))
       .take(10)
