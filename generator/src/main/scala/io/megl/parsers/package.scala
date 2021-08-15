@@ -48,7 +48,8 @@ package object parsers extends LazyLogging {
     Constants.specifications.listRecursively
       //      .filter(_.name.endsWith("common.ts"))
 //      .filter(_.name.endsWith("CatAllocationRecord.ts"))
-      .filter(_.name.endsWith("behaviors.ts"))
+//      .filter(_.name.endsWith("behaviors.ts"))
+      .filter(_.name.endsWith("Aggregate.ts"))
       .filter(_.isRegularFile())
       .take(10)
       .flatMap { f =>

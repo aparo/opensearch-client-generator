@@ -13,7 +13,34 @@ trait MetaObject {
 
   def name: String
 
-  def render(): String
+  protected val imports = new mutable.HashSet[String]()
+
+  def render(): String = {
+    val code = new ListBuffer[String]()
+    code += s"package $packageName\n\n"
+    val body = renderBody()
+    val jsonCode = renderJsonSerialization()
+    populateImports(body)
+
+    imports.toList.sorted.foreach(imp => code += s"import $imp\n")
+    code += "\n"
+
+    code += body
+    code += jsonCode
+
+    code.mkString
+  }
+
+  def renderBody():String
+
+  def renderJsonSerialization():String={
+    imports += "zio.json._"
+    s"""
+       |object $name {
+       |  implicit val codec: JsonCodec[$name] = DeriveJsonCodec.gen[$name]
+       |}
+       |""".stripMargin
+  }
 
   def save(destination: File): Unit = {
     PathUtils.saveScalaFile(
@@ -28,11 +55,34 @@ trait MetaObject {
     parts.mkString(".")
   }
 
+  def populateImports(str: String): Unit ={
+  }
 
   implicit class ScalaConversions(str: String) {
     def typeToScala: String = {
       str match {
         case "string" => "String"
+        case "boolean" => "Boolean"
+        case "undefined" => "None"
+        case "short" => "Short"
+        case "byte" => "Byte"
+        case "integer" => "Int"
+        case "uint" => "Int"
+        case "long" => "Long"
+        case "ulong" => "Long"
+        case "float" => "Float"
+        case "double" => "Double"
+        case "Names"|"Time" =>
+          imports += "opensearch._"
+          str
+        case "Dictionary" => "Map" // common.ts
+
+        case "ErrorCause" => "ErrorCauseFormatter" // common.ts
+        case "MainError" => "ErrorFormatter" // common.ts
+        case "UserDefinedValue" =>
+          imports += "zio.json.ast._"
+          "Json"
+
         case _ => str
       }
     }
@@ -47,58 +97,59 @@ trait MetaObject {
   }
 
 
-  def renderType(tpe: Option[TsType]): String = {
-    tpe match {
-      case Some(value) =>
-        value match {
-          case TsTypeRef(comments, name, tparams) => name.parts.length match {
-            case 1 => name.parts.head.value
-          }
-          case TsTypeLiteral(literal) => literal.asString
-          case TsTypeObject(comments, members) => "AnyRef"
-          case TsTypeFunction(signature) => "AnyRef"
-          case TsTypeConstructor(isAbstract, signature) => "AnyRef"
-          case TsTypeIs(ident, tpe) => "AnyRef"
-          case TsTypeAsserts(ident, isOpt) => "AnyRef"
-          case TsTypeTuple(elems) => "AnyRef"
-          case TsTypeQuery(expr) => "AnyRef"
-          case TsTypeRepeated(underlying) => "AnyRef"
-          case TsTypeKeyOf(key) => "AnyRef"
-          case TsTypeLookup(from, key) => "AnyRef"
-          case TsTypeThis() => "this"
-          case TsTypeIntersect(types) => "AnyRef"
-          case TsTypeUnion(types) =>
-            val unionTypes = types.map(t => renderType(Some(t))).toList
-            unionTypes.length match {
-              case 1 => unionTypes.head
-              case 2 if unionTypes(1) == "undefined" => s"Option[${unionTypes.head.typeToScala}]"
+  def renderType(value: TsType): String =
+    value match {
+      case TsTypeRef(comments, name, tparams) => name.parts.length match {
+        case 1 =>
+          var n = name.parts.head.value.typeToScala
+          if (tparams.nonEmpty)
+            n += "[" + tparams.map(v => renderType(v)).mkString(", ") + "]"
+          n
+      }
+      case TsTypeLiteral(literal) => literal.asString
+      case TsTypeObject(comments, members) => "AnyRef"
+      case TsTypeFunction(signature) => "AnyRef"
+      case TsTypeConstructor(isAbstract, signature) => "AnyRef"
+      case TsTypeIs(ident, tpe) => "AnyRef"
+      case TsTypeAsserts(ident, isOpt) => "AnyRef"
+      case TsTypeTuple(elems) => "AnyRef"
+      case TsTypeQuery(expr) => "AnyRef"
+      case TsTypeRepeated(underlying) => "AnyRef"
+      case TsTypeKeyOf(key) => "AnyRef"
+      case TsTypeLookup(from, key) => "AnyRef"
+      case TsTypeThis() => "this"
+      case TsTypeIntersect(types) => "AnyRef"
+      case TsTypeUnion(types) =>
+        val unionTypes = types.map(t => renderType(t)).toList
+        unionTypes.length match {
+          case 1 =>
+            unionTypes.head.typeToScala
+          case 2 if unionTypes.contains("None") =>
+            s"Option[${unionTypes.filterNot(_ == "None").head.typeToScala}]"
+          case 3 =>
+            val items = unionTypes.map(_.typeToScala)
+            if (items.contains("String") && items.contains("Array[String]")) {
+              if (items.contains("None")) {
+                imports += "opensearch._"
+                "Option[StringOrArray]"
+              } else {
+                throw new RuntimeException(s"invalid types:$unionTypes")
+              }
+            } else {
+              throw new RuntimeException(s"invalid types:$unionTypes")
             }
-          case predicate: TsTypePredicate => "AnyRef"
-          case TsTypeConditional(pred, ifTrue, ifFalse) => "AnyRef"
-          case TsTypeExtends(tpe, ext) => "AnyRef"
-          case TsTypeInfer(tparam) => "AnyRef"
         }
-      case None => "AnyRef"
+      case predicate: TsTypePredicate => "AnyRef"
+      case TsTypeConditional(pred, ifTrue, ifFalse) => "AnyRef"
+      case TsTypeExtends(tpe, ext) => "AnyRef"
+      case TsTypeInfer(tparam) => "AnyRef"
     }
-  }
-
 }
 
 final case class MetaClass(tsFile: File, name: String, decl: TsDeclClass) extends MetaObject {
 
-  private val imports=new mutable.HashSet[String]()
 
-  override def render(): String = {
-    val code = new ListBuffer[String]()
-    code += s"package $packageName\n\n"
-    val body = renderBody()
-
-    imports.toList.sorted.foreach(imp => code += s"import $imp\n")
-    code += "\n"
-
-    code += body
-    code.mkString
-  }
+  val needJSON: Boolean = true
 
   def renderBody(): String = {
     val code = new ListBuffer[String]()
@@ -121,11 +172,12 @@ final case class MetaClass(tsFile: File, name: String, decl: TsDeclClass) extend
           case TsMemberProperty(comments, level, name, tpe, expr, isStatic, isReadOnly) =>
             val realName = name.value
             val varName = underscoreToCamel(realName).nameToMember
+            val typ = renderType(tpe.get)
             if (realName != varName) {
-              imports+="zio.json._"
-              members += s"""@jsonField("$realName") $varName: ${renderType(tpe)}"""
+              imports += "zio.json._"
+              members += s"""@jsonField("$realName") $varName: $typ"""
             } else
-              members += s"$realName: ${renderType(tpe)}"
+              members += s"$realName: $typ"
         }
 
     }
@@ -140,8 +192,7 @@ final case class MetaClass(tsFile: File, name: String, decl: TsDeclClass) extend
 
 final case class MetaEnum(tsFile: File, name: String, enum: TsDeclEnum) extends MetaObject {
 
-
-  def render(): String = {
+  def renderBody(): String = {
     val code = new ListBuffer[String]()
     // we check type of enum
     var enumType = "String"
@@ -203,4 +254,49 @@ final case class MetaEnum(tsFile: File, name: String, enum: TsDeclEnum) extends 
     code.mkString("")
   }
 
+  // TODO implement
+  override def renderJsonSerialization():String=""
+}
+
+final case class MetaInterface(tsFile: File, name: String, interface: TsDeclInterface) extends MetaObject {
+  override def renderJsonSerialization():String=""
+
+  def renderBody(): String = {
+    val code = new ListBuffer[String]()
+    code += s"trait ${interface.name.value}"
+    if (interface.tparams.nonEmpty) {
+      code += "[" + interface.tparams.map(p => p.name.value).mkString(", ") + "]"
+    }
+    code += "{"
+
+    val members = new ListBuffer[String]()
+
+    interface.members.foreach {
+      member =>
+        member match {
+          case TsMemberCall(comments, level, signature) =>
+          case TsMemberCtor(comments, level, signature) =>
+          case TsMemberFunction(comments, level, name, methodType, signature, isStatic, isReadOnly) =>
+          case TsMemberIndex(comments, isReadOnly, level, indexing, valueType) =>
+          case TsMemberTypeMapped(comments, level, readonly, key, from, optionalize, to) =>
+          case TsMemberProperty(comments, level, name, tpe, expr, isStatic, isReadOnly) =>
+            val realName = name.value
+            val varName = underscoreToCamel(realName).nameToMember
+            val typ = renderType(tpe.get)
+            if (realName != varName) {
+              members +=
+                s"""// $realName
+                   |def $varName: $typ""".stripMargin
+            } else
+              members += s"def $realName: $typ"
+        }
+
+    }
+
+    code += members.mkString("\n")
+
+    code += "}"
+
+    code.mkString("")
+  }
 }

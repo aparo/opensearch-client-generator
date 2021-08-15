@@ -27,7 +27,8 @@ class ScalaClassGenerator(generatorContext: GeneratorContext) extends GeneratorT
       case c: TsDeclClass =>
         Some(MetaClass(file, c.name.value, c))
 
-      case TsDeclInterface(comments, declared, name, tparams, inheritance, members, codePath) => None
+      case c: TsDeclInterface =>
+        Some(MetaInterface(file, c.name.value, c))
       case c: TsDeclEnum =>
         Some(MetaEnum(file, c.name.value, c))
 
