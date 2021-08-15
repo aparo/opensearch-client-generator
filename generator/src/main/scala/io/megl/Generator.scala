@@ -16,11 +16,11 @@
 
 package io.megl
 
-import io.megl.generators.{GeneratorContext, OpenAPIGeneratorFromSchema, ScalaClassGenerator}
-import io.megl.parsers.jsonspec.APIEntry
+import io.megl.generators.GeneratorContext
+import io.megl.generators.scala.ScalaClassGenerator
 
 object Generator extends App {
-//  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
+  //  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
   //val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "document" / "single" / "update" / "UpdateRequest.ts"
 
   // val result=for {
@@ -30,29 +30,24 @@ object Generator extends App {
   // }
 
   val entities = io.megl.parsers.parseEntities()
-//  val gc=GeneratorContext.init()
-//  val apis: List[APIEntry] = io.megl.parsers.parseJson()
+  //  val gc=GeneratorContext.init()
+  //  val apis: List[APIEntry] = io.megl.parsers.parseJson()
 
-  val scalaGenerator=new ScalaClassGenerator(GeneratorContext(Nil))
-
-  entities.foreach {
-    case (file, tsObj) =>
-      println(tsObj)
-      val code=scalaGenerator.convertToClass(file, tsObj)
-      println(code)
-  }
+  val scalaGenerator = new ScalaClassGenerator(GeneratorContext(Nil, entities))
 
 
+  scalaGenerator.generate()
 
-//  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
-//
-//  val schema: Either[circe.Error, Root] = for {
-//    json   <- io.circe.parser.parse(schemaJson.contentAsString)
-//    schema <- json.as[Root]
-//  } yield schema
-//
-////  print(schema)
-//  val gen: OpenAPIGeneratorFromSchema = OpenAPIGeneratorFromSchema(schema.right.get)
-//  gen.generator()
+
+  //  val schemaJson: File = File.currentWorkingDirectory / "output" / "schema" / "schema.json"
+  //
+  //  val schema: Either[circe.Error, Root] = for {
+  //    json   <- io.circe.parser.parse(schemaJson.contentAsString)
+  //    schema <- json.as[Root]
+  //  } yield schema
+  //
+  ////  print(schema)
+  //  val gen: OpenAPIGeneratorFromSchema = OpenAPIGeneratorFromSchema(schema.right.get)
+  //  gen.generator()
 
 }

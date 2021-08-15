@@ -16,15 +16,18 @@
 
 package io.megl.generators
 
+import better.files.File
 import io.megl.parsers.jsonspec.APIEntry
+import org.scalablytyped.converter.internal.ts.TsNamedDecl
 
 case class GeneratorContext(
-                           apiEntries:List[APIEntry]
+                           apiEntries:List[APIEntry],
+                           entities:Seq[(File, TsNamedDecl)]
                            )
 
 object GeneratorContext{
   def init():GeneratorContext={
     val apis: List[APIEntry] = io.megl.parsers.parseJson()
-    GeneratorContext(apiEntries = apis)
+    GeneratorContext(apiEntries = apis, entities = Nil)
   }
 }

@@ -153,12 +153,13 @@ object PathUtils {
    * @param content the content to be saved
    * @param file the file to be saved
    */
-  def saveScalaFile(content: String, file: File): Unit = {
+  def saveScalaFile(content: String, file: File): String = {
     val result = Try {
       org.scalafmt.Scalafmt.format(content).get
     }.toOption.getOrElse(content)
     PathUtils.updateFileIfNeeded(file, result)
     //    logger.info(s"Generated $file")
+    result
   }
 
 }

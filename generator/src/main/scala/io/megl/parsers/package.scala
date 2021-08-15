@@ -46,7 +46,10 @@ package object parsers extends LazyLogging {
 
   def parseEntities(): Seq[(File, TsNamedDecl)] = {
     Constants.specifications.listRecursively
-      .filter(_.name.endsWith("Bytes.ts"))
+      //      .filter(_.name.endsWith("common.ts"))
+//      .filter(_.name.endsWith("CatAllocationRecord.ts"))
+      .filter(_.name.endsWith("behaviors.ts"))
+      .filter(_.isRegularFile())
       .take(10)
       .flatMap { f =>
         logger.debug(s"Loading $f")
@@ -63,7 +66,6 @@ package object parsers extends LazyLogging {
   }
 
   def convertToClass(file: File, parsed: TsParsedFile): immutable.Seq[(File, TsNamedDecl)] = {
-    import parsers.entities._
     parsed.members.toList.flatMap {
       c =>
         c match {
