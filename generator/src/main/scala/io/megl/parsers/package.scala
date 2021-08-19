@@ -44,14 +44,15 @@ package object parsers extends LazyLogging {
       .flatten
       .sortBy(_.name)
 
-  def parseEntities(): Seq[(File, TsNamedDecl)] = {
+  def parseEntities(): Seq[TSFileMetadata] = {
     Constants.specifications.listRecursively
+      .filter(_.isRegularFile())
       //      .filter(_.name.endsWith("common.ts"))
 //      .filter(_.name.endsWith("CatAllocationRecord.ts"))
 //      .filter(_.name.endsWith("behaviors.ts"))
-      .filter(_.name.endsWith("Aggregate.ts"))
-      .filter(_.isRegularFile())
-      .take(10)
+//      .filter(_.name.equals("Aggregate.ts"))
+      .filter(_.name.endsWith(".ts"))
+//      .take(10)
       .flatMap { f =>
         logger.debug(s"Loading $f")
         org.scalablytyped.converter.internal.ts.parser.parseFile(InFile(os.Path(f.toJava))) match {
@@ -66,14 +67,25 @@ package object parsers extends LazyLogging {
       .toList.flatMap(r => convertToClass(r._1, r._2))
   }
 
-  def convertToClass(file: File, parsed: TsParsedFile): immutable.Seq[(File, TsNamedDecl)] = {
+  def convertToClass(file: File, parsed: TsParsedFile): immutable.Seq[TSFileMetadata] = {
     parsed.members.toList.flatMap {
       c =>
         c match {
           case decl: TsDecl =>
             decl match {
               case decl2: TsNamedDecl =>
-                Some(file -> decl2)
+                decl2 match {
+                  case TsDeclNamespace(comments, declared, name, members, codePath, jsLocation) => None
+                  case c:TsDeclClass => Some(TSFileMetadata(file, c))
+                  case c:TsDeclInterface =>
+                    Some(TSFileMetadata(file, c))
+                  case c:TsDeclEnum =>
+                    Some(TSFileMetadata(file, c))
+                  case TsDeclVar(comments, declared, readOnly, name, tpe, expr, jsLocation, codePath) => None
+                  case TsDeclFunction(comments, declared, name, signature, jsLocation, codePath) => None
+                  case TsDeclTypeAlias(comments, declared, name, tparams, alias, codePath) => None
+                  case decl: TsNamedValueDecl => None
+                }
               case TsImport(typeOnly, imported, from) => None
               case TsExport(comments, typeOnly, tpe, exported) => None
               case TsExportAsNamespace(ident) => None

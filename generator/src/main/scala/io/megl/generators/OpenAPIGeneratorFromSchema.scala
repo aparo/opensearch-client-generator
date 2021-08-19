@@ -16,7 +16,7 @@
 
 package io.megl.generators
 
-import scala.collection.immutable.ListMap
+import scalagen.collection.immutable.ListMap
 
 import io.megl.generators.openapi._
 import io.megl.models._

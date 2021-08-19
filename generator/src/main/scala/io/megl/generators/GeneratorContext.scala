@@ -16,18 +16,62 @@
 
 package io.megl.generators
 
-import better.files.File
+import io.megl.common.Algorithms
+import io.megl.parsers.TSFileMetadata
 import io.megl.parsers.jsonspec.APIEntry
-import org.scalablytyped.converter.internal.ts.TsNamedDecl
 
-case class GeneratorContext(
-                           apiEntries:List[APIEntry],
-                           entities:Seq[(File, TsNamedDecl)]
-                           )
+import _root_.scala.collection.mutable.ListBuffer
 
-object GeneratorContext{
-  def init():GeneratorContext={
-    val apis: List[APIEntry] = io.megl.parsers.parseJson()
-    GeneratorContext(apiEntries = apis, entities = Nil)
+object GeneratorContext {
+  lazy val apiEntries: List[APIEntry] = io.megl.parsers.parseJson()
+  lazy val entities: Map[String, TSFileMetadata] = io.megl.parsers.parseEntities().map(e => e.name -> e).toMap
+
+  val traitsForScala = Set(
+    "CatBase",
+    "ShardsOperationResponseBase",
+    "DynamicResponseBase",
+    "ErrorResponseBase",
+    "DictionaryResponseBase",
+    "IndicesResponseBase",
+    "ResponseBase",
+    "AcknowledgedResponseBase",
+    "RequestBase",
+    "NodesResponseBase",
+    "AnalyzerBase",
+    "TokenizerBase",
+    "CharFilterBase",
+    "TokenFilterBase",
+    "CompoundWordTokenFilterBase",
+    "ProcessorBase",
+    "BulkResponseItemBase",
+    "WriteResponseBase",
+    "CustomResponseBuilderBase",
+    "PipelineAggregationBase",
+    "BucketAggregationBase")
+
+
+  lazy val dependencyTree: List[String] = {
+    val seq = new ListBuffer[(String, String)]()
+    entities.foreach {
+      e =>
+        e._2.depends.foreach(d => seq += (e._1 -> d))
+    }
+    val deps = Algorithms.tsort(seq).toList.reverse
+    val diff = entities.keySet.diff(deps.toSet)
+    diff.toList ++ deps
   }
+  //  println(tsort(Seq((1, 2), (2, 4), (3, 4), (3, 2), (1,3))))
+  //  println("sorting")
+  //  println(deppendencyTree)
+
+  /***
+   * Fix code to manage scala entities
+   */
+  def fixContextForScala(): Unit ={
+    GeneratorContext.traitsForScala.foreach{
+      t =>
+        entities(t).isTrait=true
+    }
+  }
+
 }

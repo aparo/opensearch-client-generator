@@ -17,7 +17,7 @@
 package io.megl
 
 import io.megl.generators.GeneratorContext
-import io.megl.generators.scala.ScalaClassGenerator
+import io.megl.generators.ScalaClassGenerator
 
 object Generator extends App {
   //  val tsFile: File = File.currentWorkingDirectory / "specification" / "specs" / "common" / "Bytes.ts"
@@ -29,13 +29,7 @@ object Generator extends App {
   //  parsed.members.foreach(println)
   // }
 
-  val entities = io.megl.parsers.parseEntities()
-  //  val gc=GeneratorContext.init()
-  //  val apis: List[APIEntry] = io.megl.parsers.parseJson()
-
-  val scalaGenerator = new ScalaClassGenerator(GeneratorContext(Nil, entities))
-
-
+  val scalaGenerator = new ScalaClassGenerator()
   scalaGenerator.generate()
 
 
