@@ -49,7 +49,7 @@ class ScalaClassGenerator() extends GeneratorTrait {
       case _:TsDeclVar => None
       case _:TsDeclFunction => None
       case _:TsDeclTypeAlias => None
-      case decl: TsNamedValueDecl => None
+      case _: TsNamedValueDecl => None
     }
   }
 

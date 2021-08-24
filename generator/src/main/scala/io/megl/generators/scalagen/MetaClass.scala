@@ -108,20 +108,21 @@ trait ScalaMetaObject {
           n
       }
       case TsTypeLiteral(literal) => literal.asString
-      case TsTypeObject(comments, members) => "AnyRef"
-      case TsTypeFunction(signature) => "AnyRef"
-      case TsTypeConstructor(isAbstract, signature) => "AnyRef"
-      case TsTypeIs(ident, tpe) => "AnyRef"
-      case TsTypeAsserts(ident, isOpt) => "AnyRef"
-      case TsTypeTuple(elems) => "AnyRef"
-      case TsTypeQuery(expr) => "AnyRef"
-      case TsTypeRepeated(underlying) => "AnyRef"
-      case TsTypeKeyOf(key) => "AnyRef"
-      case TsTypeLookup(from, key) => "AnyRef"
-      case TsTypeThis() => "this"
-      case TsTypeIntersect(types) => "AnyRef"
+      case _:TsTypeObject => "AnyRef"
+      case _:TsTypeFunction => "AnyRef"
+      case _:TsTypeConstructor => "AnyRef"
+      case _:TsTypeIs => "AnyRef"
+      case _:TsTypeAsserts => "AnyRef"
+      case _:TsTypeTuple => "AnyRef"
+      case _:TsTypeQuery => "AnyRef"
+      case _:TsTypeRepeated => "AnyRef"
+      case _:TsTypeKeyOf => "AnyRef"
+      case _:TsTypeLookup => "AnyRef"
+      case _:TsTypeThis => "this"
+      case _:TsTypeIntersect => "AnyRef"
       case TsTypeUnion(types) =>
         val unionTypes = types.map(t => renderType(t)).toList
+        val optional=unionTypes.contains("None")
         unionTypes.length match {
           case 1 =>
             unionTypes.head.typeToScala
@@ -143,6 +144,11 @@ trait ScalaMetaObject {
               //throw new RuntimeException(s"invalid types:$unionTypes")
               "zio.json.ast.Json"
             }
+          case _ =>
+            val types=unionTypes.filterNot(_ == "None").mkString
+            if (optional){
+              s"Option[$types]"
+            } else types
         }
       case predicate: TsTypePredicate => "AnyRef"
       case TsTypeConditional(pred, ifTrue, ifFalse) => "AnyRef"
@@ -152,11 +158,11 @@ trait ScalaMetaObject {
 
   def memberToCaseClass(member: TsMember): String = {
     member match {
-      case TsMemberCall(comments, level, signature) => ""
-      case TsMemberCtor(comments, level, signature) => ""
-      case TsMemberFunction(comments, level, name, methodType, signature, isStatic, isReadOnly) => ""
-      case TsMemberIndex(comments, isReadOnly, level, indexing, valueType) => ""
-      case TsMemberTypeMapped(comments, level, readonly, key, from, optionalize, to) => ""
+      case _:TsMemberCall => ""
+      case _:TsMemberCtor => ""
+      case _:TsMemberFunction => ""
+      case _:TsMemberIndex => ""
+      case _:TsMemberTypeMapped => ""
       case TsMemberProperty(comments, level, name, tpe, expr, isStatic, isReadOnly) =>
         val realName = name.value
         val varName = underscoreToCamel(realName).nameToMember
@@ -188,11 +194,11 @@ trait ScalaMetaObject {
 
   def memberToCaseMethod(member: TsMember): String = {
     member match {
-      case TsMemberCall(comments, level, signature) => ""
-      case TsMemberCtor(comments, level, signature) => ""
-      case TsMemberFunction(comments, level, name, methodType, signature, isStatic, isReadOnly) => ""
-      case TsMemberIndex(comments, isReadOnly, level, indexing, valueType) => ""
-      case TsMemberTypeMapped(comments, level, readonly, key, from, optionalize, to) => ""
+      case _:TsMemberCall => ""
+      case _:TsMemberCtor => ""
+      case _:TsMemberFunction => ""
+      case _:TsMemberIndex => ""
+      case _:TsMemberTypeMapped => ""
       case TsMemberProperty(comments, level, name, tpe, expr, isStatic, isReadOnly) =>
         val realName = name.value
         val varName = underscoreToCamel(realName).nameToMember
@@ -264,11 +270,11 @@ final case class MetaEnum(tsFile: TSFileMetadata, name: String, enum: TsDeclEnum
               case TsLiteral.Bool(value) =>
                 enumType = "Boolean"
             }
-          case TsExpr.Call(function, params) =>
-          case TsExpr.Unary(op, expr) =>
-          case TsExpr.BinaryOp(one, op, two) =>
-          case TsExpr.Cast(expr, tpe) =>
-          case TsExpr.ArrayOf(expr) =>
+          case _:TsExpr.Call =>
+          case _:TsExpr.Unary =>
+          case _:TsExpr.BinaryOp =>
+          case _:TsExpr.Cast =>
+          case _:TsExpr.ArrayOf =>
         }
     }
 
@@ -280,19 +286,19 @@ final case class MetaEnum(tsFile: TSFileMetadata, name: String, enum: TsDeclEnum
     enum.members.foreach {
       enumEntry =>
         code += s"  object ${enumEntry.name.value} extends ${enum.name.value}("
-        enumEntry.expr.get match {
-          case TsExpr.Ref(value) =>
+        enumEntry.expr.foreach{
+          case _:TsExpr.Ref =>
           case TsExpr.Literal(value) =>
             value match {
               case TsLiteral.Num(v) => code += v
               case TsLiteral.Str(v) => code += "\"" + v + "\""
               case TsLiteral.Bool(v) => code += v.toString
             }
-          case TsExpr.Call(function, params) =>
-          case TsExpr.Unary(op, expr) =>
-          case TsExpr.BinaryOp(one, op, two) =>
-          case TsExpr.Cast(expr, tpe) =>
-          case TsExpr.ArrayOf(expr) =>
+          case _:TsExpr.Call =>
+          case _:TsExpr.Unary =>
+          case _:TsExpr.BinaryOp =>
+          case _:TsExpr.Cast =>
+          case _:TsExpr.ArrayOf =>
         }
         code += s")\n"
     }

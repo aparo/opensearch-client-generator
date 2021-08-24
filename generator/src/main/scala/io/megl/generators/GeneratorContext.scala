@@ -27,10 +27,10 @@ object GeneratorContext {
   lazy val entities: Map[String, TSFileMetadata] = io.megl.parsers.parseEntities().map(e => e.name -> e).toMap
 
   val traitsForScala = Set(
-    "CatBase",
+//    "CatBase",
     "ShardsOperationResponseBase",
     "DynamicResponseBase",
-    "ErrorResponseBase",
+//    "ErrorResponseBase",
     "DictionaryResponseBase",
     "IndicesResponseBase",
     "ResponseBase",
@@ -43,7 +43,7 @@ object GeneratorContext {
     "TokenFilterBase",
     "CompoundWordTokenFilterBase",
     "ProcessorBase",
-    "BulkResponseItemBase",
+//    "BulkResponseItemBase",
     "WriteResponseBase",
     "CustomResponseBuilderBase",
     "PipelineAggregationBase",
