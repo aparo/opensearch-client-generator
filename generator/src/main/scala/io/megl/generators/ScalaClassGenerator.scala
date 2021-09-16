@@ -16,10 +16,14 @@ class ScalaClassGenerator() extends GeneratorTrait {
     GeneratorContext
       .dependencyTree
       .foreach{entry =>
-        val instance=GeneratorContext.entities(entry)
-        convertToClass(instance).foreach {
-          case metaObject =>
-            metaObject.save(SAVE_PATH)
+        GeneratorContext.entities.get(entry) match {
+          case Some(instance) =>
+            if(instance.shouldRender)
+              instance.scalaMetaObject.foreach {
+                case metaObject =>
+                  metaObject.save(SAVE_PATH)
+              }
+          case None =>
         }
 
       }
@@ -35,23 +39,7 @@ class ScalaClassGenerator() extends GeneratorTrait {
 
   }
 
-  def convertToClass(instance:TSFileMetadata): Option[ScalaMetaObject] = {
-    instance.decl match {
-      case _:TsDeclNamespace => None
-      case c: TsDeclClass =>
-        Some(MetaClass(instance, c.name.value, c))
 
-      case c: TsDeclInterface =>
-        Some(MetaInterface(instance, c.name.value, c))
-      case c: TsDeclEnum =>
-        Some(MetaEnum(instance, c.name.value, c))
-
-      case _:TsDeclVar => None
-      case _:TsDeclFunction => None
-      case _:TsDeclTypeAlias => None
-      case _: TsNamedValueDecl => None
-    }
-  }
 
 
   def extractScalaFile(srcFile: File, name: String): File = {

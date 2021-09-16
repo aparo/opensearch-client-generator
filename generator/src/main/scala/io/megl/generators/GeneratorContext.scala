@@ -16,13 +16,14 @@
 
 package io.megl.generators
 
+import com.typesafe.scalalogging.LazyLogging
 import io.megl.common.Algorithms
 import io.megl.parsers.TSFileMetadata
 import io.megl.parsers.jsonspec.APIEntry
 
 import _root_.scala.collection.mutable.ListBuffer
 
-object GeneratorContext {
+object GeneratorContext extends LazyLogging{
   lazy val apiEntries: List[APIEntry] = io.megl.parsers.parseJson()
   lazy val entities: Map[String, TSFileMetadata] = io.megl.parsers.parseEntities().map(e => e.name -> e).toMap
 
@@ -68,10 +69,30 @@ object GeneratorContext {
    * Fix code to manage scala entities
    */
   def fixContextForScala(): Unit ={
+    logger.debug("Processing Traits")
     GeneratorContext.traitsForScala.foreach{
       t =>
-        entities(t).isTrait=true
+        entities.get(t).foreach(_.isTrait=true)
     }
+    // we fix containers
+    logger.debug("Processing containers")
+    entities.valuesIterator.filter(_.isContainer).foreach{
+      container=>
+        container.fields.foreach{
+          member =>
+            entities.get(member.typeName)
+              .foreach{
+                typ =>
+                typ.container=Some(container)
+                typ.hintName=Some(member.name)
+                typ.shouldRender=false
+              }
+        }
+        // disable container base
+        val baseName=container.file.name.replace("Container.ts", "Base")
+        entities.get(baseName).foreach(p => p.shouldRender=false)
+    }
+    logger.debug("Finished loading models")
   }
 
 }
